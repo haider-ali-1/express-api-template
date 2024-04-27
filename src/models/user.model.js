@@ -1,19 +1,19 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import validator from "validator";
 
 const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "name is required"],
       trim: true,
-      lowercase: true,
       index: true,
     },
     username: {
       type: String,
-      required: true,
+      required: [true, "username is required"],
       unique: true,
       trim: true,
       lowercase: true,
@@ -21,17 +21,23 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "email is required"],
       lowercase: true,
+      unique: true,
       trim: true,
+      validate: {
+        validator: (value) => validator.isEmail(value),
+        message: "please provide a valid email",
+      },
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "password is required"],
+      minLength: [8, "password must be at least 8 characters long"],
     },
     avatar: {
       type: String,
-      required: true,
+      required: [true, "avatar is required"],
     },
     coverImage: {
       type: String,
